@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signup / Login</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <script defer src="./assets/api.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (api.isAuthed()) { window.location.href = 'home.html'; return; }
+        const msg = document.getElementById('msg');
+        const toggle = document.getElementById('toggle');
+        const signupCard = document.getElementById('signupCard');
+        const loginCard = document.getElementById('loginCard');
+        toggle.addEventListener('click', () => {
+            const showSignup = signupCard.style.display !== 'none';
+            signupCard.style.display = showSignup ? 'none' : 'block';
+            loginCard.style.display = showSignup ? 'block' : 'none';
+            msg.textContent = '';
+        });
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await api.fetch('/auth/signup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({
+                    name: document.getElementById('su_name').value.trim(),
+                    email: document.getElementById('su_email').value.trim(),
+                    phone: document.getElementById('su_phone').value.trim(),
+                    password: document.getElementById('su_password').value,
+                })});
+                msg.textContent = 'Signup successful. You can now log in.';
+                signupCard.style.display = 'none';
+                loginCard.style.display = 'block';
+            } catch { msg.textContent = 'Signup failed.'; }
+        });
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const data = await api.fetch('/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({
+                    email: document.getElementById('li_email').value.trim(),
+                    password: document.getElementById('li_password').value,
+                })});
+                api.setToken(data.token);
+                window.location.href = 'home.html';
+            } catch { msg.textContent = 'Login failed.'; }
+        });
+    });
+    </script>
+    </head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Signup / Login</h1>
+        </div>
+    </header>
+    <main class="container">
+        <div style="display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap;">
+            <div class="card" id="signupCard" style="min-width:320px;">
+                <h2>Signup</h2>
+                <form id="signupForm">
+                    <input id="su_name" placeholder="Name" required />
+                    <input id="su_email" placeholder="Email" type="email" required />
+                    <input id="su_phone" placeholder="Phone" />
+                    <input id="su_password" placeholder="Password" type="password" required />
+                    <button type="submit">Sign up</button>
+                </form>
+            </div>
+            <div class="card" id="loginCard" style="min-width:320px; display:none;">
+                <h2>Login</h2>
+                <form id="loginForm">
+                    <input id="li_email" placeholder="Email" type="email" required />
+                    <input id="li_password" placeholder="Password" type="password" required />
+                    <button type="submit">Log in</button>
+                </form>
+            </div>
+        </div>
+        <div style="margin-top:8px; display:flex; gap:12px; align-items:center;">
+            <button id="toggle" class="link">Switch to Login / Signup</button>
+            <p id="msg" class="muted"></p>
+        </div>
+    </main>
+</body>
+</html>
+
+

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Complaint</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <script defer src="./assets/api.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        api.requireAuth();
+        const form = document.getElementById('complaintForm');
+        const msg = document.getElementById('messages');
+        async function getJSON(url){ const r = await fetch(url); if(!r.ok) throw 0; return r.json(); }
+        async function load(){
+            const list = document.getElementById('list');
+            const items = await getJSON(`${window.API_ROOT}/complaints?page=1&pageSize=20`);
+            list.innerHTML = items.map(c => `<div class='card'><strong>${c.area}</strong><br/>${c.description}<br/><small>${new Date(c.created_at).toLocaleString()}</small></div>`).join('');
+        }
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const area = document.getElementById('area').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const image = document.getElementById('image').files[0];
+            let s3_key = null;
+            try {
+                if (image) {
+                    const qs = new URLSearchParams({ filename: image.name, contentType: image.type || 'application/octet-stream' });
+                    const urlRes = await getJSON(`${window.API_ROOT}/complaints/upload-url?` + qs.toString());
+                    await fetch(urlRes.url, { method:'PUT', body:image, headers:{'Content-Type': image.type || 'application/octet-stream'} });
+                    s3_key = urlRes.key;
+                }
+                const r = await fetch(`${window.API_ROOT}/complaints`, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ user_id:1, area, description, s3_key }) });
+                if (!r.ok) throw 0;
+                msg.textContent = 'Complaint submitted successfully!';
+                form.reset();
+                load();
+            } catch { msg.textContent = 'Failed to submit complaint'; }
+        });
+        load();
+    });
+    </script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Complaint</h1>
+            <nav>
+                <div class="nav-left">
+                    <a href="home.html">Home</a>
+                    <a href="complaint.html">Complaint</a>
+                    <a href="schedules.html">Garbage Schedule</a>
+                    <a href="bins.html">Bins/Sensor</a>
+                    <a href="ratings.html">Ratings</a>
+                </div>
+                <div class="nav-right">
+                    <button class="link" onclick="api.logout()">Logout</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <form id="complaintForm">
+            <input type="text" id="area" placeholder="Area" required />
+            <textarea id="description" placeholder="Complaint" required></textarea>
+            <input type="file" id="image" accept="image/*" />
+            <button type="submit">Submit</button>
+        </form>
+        <div id="messages" class="muted"></div>
+        <h2>Recent Complaints</h2>
+        <div id="list" class="list"></div>
+    </main>
+</body>
+</html>
+
+

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Garbage Schedules</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <script defer src="./assets/api.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        api.requireAuth();
+        const form = document.getElementById('scheduleSearch');
+        const list = document.getElementById('schedulesList');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const area = document.getElementById('sch_area').value.trim();
+            const day = document.getElementById('sch_day').value;
+            const qs = new URLSearchParams();
+            if (area) qs.set('area', area);
+            if (day) qs.set('day', day);
+            try {
+                const rows = await api.fetch(`/schedules?${qs.toString()}`);
+                list.innerHTML = rows.map(r => `<div class='card'><strong>${r.area}</strong> - ${r.day_of_week} (${r.time_window})</div>`).join('');
+            } catch { list.textContent = 'Failed to fetch schedules'; }
+        });
+    });
+    </script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Garbage Schedules</h1>
+            <nav>
+                <div class="nav-left">
+                    <a href="home.html">Home</a>
+                    <a href="complaint.html">Complaint</a>
+                    <a href="schedules.html">Garbage Schedule</a>
+                    <a href="bins.html">Bins/Sensor</a>
+                    <a href="ratings.html">Ratings</a>
+                </div>
+                <div class="nav-right">
+                    <button class="link" onclick="api.logout()">Logout</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <form id="scheduleSearch">
+            <input type="text" id="sch_area" placeholder="Area" />
+            <select id="sch_day">
+                <option value="">Any day</option>
+                <option>Monday</option>
+                <option>Tuesday</option>
+                <option>Wednesday</option>
+                <option>Thursday</option>
+                <option>Friday</option>
+                <option>Saturday</option>
+                <option>Sunday</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+        <div id="schedulesList" class="list" style="margin-top:12px"></div>
+    </main>
+</body>
+</html>
+
+

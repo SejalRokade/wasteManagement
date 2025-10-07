@@ -1,0 +1,16 @@
+[Unit]
+Description=Waste Mgmt API
+After=network.target
+
+[Service]
+Environment=NODE_ENV=production
+EnvironmentFile=/home/ubuntu/app/.env
+WorkingDirectory=/home/ubuntu/app
+ExecStart=/usr/bin/node server.js
+Restart=always
+User=ubuntu
+
+[Install]
+WantedBy=multi-user.target
+
+

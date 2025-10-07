@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Waste Management - Home</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <script defer src="./assets/api.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        api.requireAuth();
+        // Load dashboard stats
+        try {
+            const s = await fetch(`${window.API_ROOT}/stats`).then(r=>r.json());
+            document.getElementById('statUsers').textContent = s.users;
+            document.getElementById('statComplaints').textContent = s.complaints;
+            document.getElementById('statOpen').textContent = s.openComplaints;
+            document.getElementById('statBins').textContent = s.bins;
+            document.getElementById('statAvgRating').textContent = s.avgRating;
+        } catch {}
+        // Load gallery images (explicit S3 URLs)
+        const gallery = document.getElementById('gallery');
+        const imageUrls = [
+            'https://waste-management-fa.s3.eu-north-1.amazonaws.com/1.jpeg',
+            'https://waste-management-fa.s3.eu-north-1.amazonaws.com/2.webp',
+            'https://waste-management-fa.s3.eu-north-1.amazonaws.com/3.webp'
+        ];
+        gallery.innerHTML = imageUrls.map(url => {
+            const label = url.split('/').pop().replace(/\..+$/, '');
+            return `<div class='card'><img class='thumb' src='${url}' alt='${label}' /><div class='muted'>${url}</div></div>`;
+        }).join('');
+    });
+    </script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Waste Management Portal</h1>
+            <p class="muted">Citizen services for complaints, schedules, bins, and cleanliness ratings. Learn how we manage waste efficiently and sustainably across the city.</p>
+            <nav>
+                <div class="nav-left">
+                    <a href="home.html">Home</a>
+                    <a href="complaint.html">Complaint</a>
+                    <a href="schedules.html">Garbage Schedule</a>
+                    <a href="bins.html">Bins/Sensor</a>
+                    <a href="ratings.html">Ratings</a>
+                </div>
+                <div class="nav-right">
+                    <button class="link" onclick="api.logout()">Logout</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <section class="grid" style="margin-bottom:16px;">
+            <div class="card">
+                <h2>What is Waste Management?</h2>
+                <p class="muted">Waste management involves collection, transportation, processing, recycling, and disposal of waste materials. Effective systems reduce pollution, improve public health, and enable circular use of resources.</p>
+            </div>
+            <div class="card">
+                <h2>Our Approach</h2>
+                <p class="muted">We combine citizen feedback with route schedules and bin sensor data. Photos are stored in S3, data in RDS, and everything is secured inside a VPC for reliability and performance.</p>
+            </div>
+            <div class="card">
+                <h2>How You Can Help</h2>
+                <p class="muted">Report overflowing bins, segregate waste, and participate in local drives. Your reports help supervisors prioritize cleanups quickly.</p>
+            </div>
+        </section>
+        <section class="grid" style="margin-bottom:16px;">
+            <div class="card"><h2>Users</h2><div id="statUsers" class="muted">-</div></div>
+            <div class="card"><h2>Total Complaints</h2><div id="statComplaints" class="muted">-</div></div>
+            <div class="card"><h2>Open Complaints</h2><div id="statOpen" class="muted">-</div></div>
+            <div class="card"><h2>Bins</h2><div id="statBins" class="muted">-</div></div>
+            <div class="card"><h2>Avg Rating</h2><div id="statAvgRating" class="muted">-</div></div>
+        </section>
+        <section class="grid" id="gallery" style="margin-bottom:16px;"></section>
+        <div class="grid">
+            <div class="card">
+                <h2>Report a Complaint</h2>
+                <p class="muted">Upload a photo, describe the issue, and track status.</p>
+                <a href="complaint.html"><button>Open Complaint Form</button></a>
+            </div>
+            <div class="card">
+                <h2>View Schedules</h2>
+                <p class="muted">Search collection schedules by area or day.</p>
+                <a href="schedules.html"><button>Find Schedules</button></a>
+            </div>
+            <div class="card">
+                <h2>Bins & Sensors</h2>
+                <p class="muted">See current fill levels and last emptied times.</p>
+                <a href="bins.html"><button>View Bins</button></a>
+            </div>
+            <div class="card">
+                <h2>Area Ratings</h2>
+                <p class="muted">Rate cleanliness and read citizen feedback.</p>
+                <a href="ratings.html"><button>Rate Now</button></a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+
+

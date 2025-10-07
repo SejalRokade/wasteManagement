@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Area Ratings</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <script defer src="./assets/api.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        api.requireAuth();
+        const form = document.getElementById('ratingForm');
+        const list = document.getElementById('ratingsList');
+        async function load(area){
+            const qs = area ? `?area=${encodeURIComponent(area)}` : '';
+            try {
+                const rows = await api.fetch(`/ratings${qs}`);
+                list.innerHTML = rows.map(r => `<div class='card'><strong>${r.area}</strong> - ${r.rating}/5<br/>${r.comment || ''}<br/><small>${new Date(r.created_at).toLocaleString()}</small></div>`).join('');
+            } catch { list.textContent = 'Failed to load ratings'; }
+        }
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = { user_id: 1, area: document.getElementById('rt_area').value.trim(), rating: parseInt(document.getElementById('rt_rating').value, 10), comment: document.getElementById('rt_comment').value.trim() };
+            try { await api.fetch('/ratings', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }); form.reset(); load(body.area); } catch { list.textContent='Failed to submit rating'; }
+        });
+        load('');
+    });
+    </script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Area Ratings</h1>
+            <nav>
+                <div class="nav-left">
+                    <a href="home.html">Home</a>
+                    <a href="complaint.html">Complaint</a>
+                    <a href="schedules.html">Garbage Schedule</a>
+                    <a href="bins.html">Bins/Sensor</a>
+                    <a href="ratings.html">Ratings</a>
+                </div>
+                <div class="nav-right">
+                    <button class="link" onclick="api.logout()">Logout</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <form id="ratingForm">
+            <input type="text" id="rt_area" placeholder="Area" required />
+            <select id="rt_rating">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            <input type="text" id="rt_comment" placeholder="Comment (optional)" />
+            <button type="submit">Submit Rating</button>
+        </form>
+        <div id="ratingsList" class="list" style="margin-top:12px;"></div>
+    </main>
+</body>
+</html>
+
+

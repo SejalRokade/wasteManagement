@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bins & Sensors</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <script defer src="./assets/api.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        api.requireAuth();
+        const list = document.getElementById('binsList');
+        try {
+            const rows = await api.fetch('/bins');
+            list.innerHTML = rows.map(r => `<div class='card'><strong>${r.area}</strong><br/>Type: ${r.bin_type}<br/>Level: ${r.current_level_percent || 0}%<br/>Last Emptied: ${r.last_emptied ? new Date(r.last_emptied).toLocaleString() : 'N/A'}</div>`).join('');
+        } catch { list.textContent = 'Failed to load bins'; }
+    });
+    </script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Bins & Sensors</h1>
+            <nav>
+                <div class="nav-left">
+                    <a href="home.html">Home</a>
+                    <a href="complaint.html">Complaint</a>
+                    <a href="schedules.html">Garbage Schedule</a>
+                    <a href="bins.html">Bins/Sensor</a>
+                    <a href="ratings.html">Ratings</a>
+                </div>
+                <div class="nav-right">
+                    <button class="link" onclick="api.logout()">Logout</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <div id="binsList" class="grid"></div>
+    </main>
+</body>
+</html>
+
+
