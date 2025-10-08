@@ -1,12 +1,12 @@
 const express = require('express');
-const SQLiteDatabase = require('../database/sqlite');
+const DatabaseFactory = require('../database/database-factory');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { z } = require('zod');
 
 const router = express.Router();
 
-const db = new SQLiteDatabase();
+const db = DatabaseFactory.create();
 
 const signupSchema = z.object({
 	name: z.string().min(1),
@@ -26,7 +26,7 @@ router.post('/signup', async (req, res) => {
 		);
 		res.json({ success: true, userId: result.insertId });
 	} catch (err) {
-		if (err.message.includes('UNIQUE constraint failed')) return res.status(400).json({ error: 'Email already exists' });
+		if (err.message.includes('Duplicate entry') || err.message.includes('UNIQUE constraint failed')) return res.status(400).json({ error: 'Email already exists' });
 		console.error('Signup error:', err);
 		res.status(400).json({ error: 'Invalid input' });
 	}

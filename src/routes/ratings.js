@@ -1,9 +1,9 @@
 const express = require('express');
-const SQLiteDatabase = require('../database/sqlite');
+const DatabaseFactory = require('../database/database-factory');
 
 const router = express.Router();
 
-const db = new SQLiteDatabase();
+const db = DatabaseFactory.create();
 
 router.post('/', async (req, res) => {
 	const { user_id, area, rating, comment } = req.body || {};

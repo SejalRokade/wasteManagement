@@ -1,9 +1,9 @@
 const express = require('express');
-const SQLiteDatabase = require('../database/sqlite');
+const DatabaseFactory = require('../database/database-factory');
 
 const router = express.Router();
 
-const db = new SQLiteDatabase();
+const db = DatabaseFactory.create();
 
 // Search schedules by area and/or day_of_week
 router.get('/', async (req, res) => {
