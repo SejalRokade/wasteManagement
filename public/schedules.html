@@ -45,21 +45,25 @@
         </div>
     </header>
     <main class="container">
-        <form id="scheduleSearch">
-            <input type="text" id="sch_area" placeholder="Area" />
-            <select id="sch_day">
-                <option value="">Any day</option>
-                <option>Monday</option>
-                <option>Tuesday</option>
-                <option>Wednesday</option>
-                <option>Thursday</option>
-                <option>Friday</option>
-                <option>Saturday</option>
-                <option>Sunday</option>
-            </select>
-            <button type="submit">Search</button>
-        </form>
-        <div id="schedulesList" class="list" style="margin-top:12px"></div>
+        <div class="card" style="max-width: 600px; margin: 0 auto 32px;">
+            <h2 style="text-align: center; margin-bottom: 24px;">Search Garbage Collection Schedules</h2>
+            <form id="scheduleSearch">
+                <input type="text" id="sch_area" placeholder="Enter area name (e.g., Downtown, Residential Area A)" />
+                <select id="sch_day">
+                    <option value="">Any day of the week</option>
+                    <option>Monday</option>
+                    <option>Tuesday</option>
+                    <option>Wednesday</option>
+                    <option>Thursday</option>
+                    <option>Friday</option>
+                    <option>Saturday</option>
+                    <option>Sunday</option>
+                </select>
+                <button type="submit" style="width: 100%;">Search Schedules</button>
+            </form>
+        </div>
+        <h2 style="text-align: center; margin: 32px 0 24px;">Collection Schedules</h2>
+        <div id="schedulesList" class="list"></div>
     </main>
 </body>
 </html>

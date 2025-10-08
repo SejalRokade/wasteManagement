@@ -35,8 +35,10 @@
 <body>
     <header>
         <div class="container">
-            <h1>Waste Management Portal</h1>
-            <p class="muted">Citizen services for complaints, schedules, bins, and cleanliness ratings. Learn how we manage waste efficiently and sustainably across the city.</p>
+            <div class="hero">
+                <h1>Waste Management Portal</h1>
+                <p class="muted">Citizen services for complaints, schedules, bins, and cleanliness ratings. Learn how we manage waste efficiently and sustainably across the city.</p>
+            </div>
             <nav>
                 <div class="nav-left">
                     <a href="home.html">Home</a>
@@ -66,12 +68,27 @@
                 <p class="muted">Report overflowing bins, segregate waste, and participate in local drives. Your reports help supervisors prioritize cleanups quickly.</p>
             </div>
         </section>
-        <section class="grid" style="margin-bottom:16px;">
-            <div class="card"><h2>Users</h2><div id="statUsers" class="muted">-</div></div>
-            <div class="card"><h2>Total Complaints</h2><div id="statComplaints" class="muted">-</div></div>
-            <div class="card"><h2>Open Complaints</h2><div id="statOpen" class="muted">-</div></div>
-            <div class="card"><h2>Bins</h2><div id="statBins" class="muted">-</div></div>
-            <div class="card"><h2>Avg Rating</h2><div id="statAvgRating" class="muted">-</div></div>
+        <section class="stats-grid">
+            <div class="card stat-card">
+                <div class="stat-number" id="statUsers">-</div>
+                <div class="stat-label">Users</div>
+            </div>
+            <div class="card stat-card">
+                <div class="stat-number" id="statComplaints">-</div>
+                <div class="stat-label">Total Complaints</div>
+            </div>
+            <div class="card stat-card">
+                <div class="stat-number" id="statOpen">-</div>
+                <div class="stat-label">Open Complaints</div>
+            </div>
+            <div class="card stat-card">
+                <div class="stat-number" id="statBins">-</div>
+                <div class="stat-label">Bins</div>
+            </div>
+            <div class="card stat-card">
+                <div class="stat-number" id="statAvgRating">-</div>
+                <div class="stat-label">Avg Rating</div>
+            </div>
         </section>
         <section class="grid" id="gallery" style="margin-bottom:16px;"></section>
         <div class="grid">

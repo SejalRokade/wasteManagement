@@ -53,30 +53,30 @@
             <h1>Signup / Login</h1>
         </div>
     </header>
-    <main class="container">
-        <div style="display:flex; align-items:flex-start; gap:16px; flex-wrap:wrap;">
-            <div class="card" id="signupCard" style="min-width:320px;">
-                <h2>Signup</h2>
+    <main class="auth-container">
+        <div class="auth-card">
+            <div class="card" id="signupCard">
+                <h2 style="text-align: center; margin-bottom: 24px;">Create Account</h2>
                 <form id="signupForm">
-                    <input id="su_name" placeholder="Name" required />
-                    <input id="su_email" placeholder="Email" type="email" required />
-                    <input id="su_phone" placeholder="Phone" />
+                    <input id="su_name" placeholder="Full Name" required />
+                    <input id="su_email" placeholder="Email Address" type="email" required />
+                    <input id="su_phone" placeholder="Phone Number (Optional)" />
                     <input id="su_password" placeholder="Password" type="password" required />
-                    <button type="submit">Sign up</button>
+                    <button type="submit">Create Account</button>
                 </form>
             </div>
-            <div class="card" id="loginCard" style="min-width:320px; display:none;">
-                <h2>Login</h2>
+            <div class="card" id="loginCard" style="display:none;">
+                <h2 style="text-align: center; margin-bottom: 24px;">Welcome Back</h2>
                 <form id="loginForm">
-                    <input id="li_email" placeholder="Email" type="email" required />
+                    <input id="li_email" placeholder="Email Address" type="email" required />
                     <input id="li_password" placeholder="Password" type="password" required />
-                    <button type="submit">Log in</button>
+                    <button type="submit">Sign In</button>
                 </form>
             </div>
-        </div>
-        <div style="margin-top:8px; display:flex; gap:12px; align-items:center;">
-            <button id="toggle" class="link">Switch to Login / Signup</button>
-            <p id="msg" class="muted"></p>
+            <div style="text-align: center; margin-top: 20px;">
+                <button id="toggle" class="link">Switch to Login / Signup</button>
+                <p id="msg" class="muted" style="margin-top: 12px;"></p>
+            </div>
         </div>
     </main>
 </body>

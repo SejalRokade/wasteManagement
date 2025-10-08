@@ -6,6 +6,7 @@
     <title>Complaint</title>
     <link rel="stylesheet" href="./assets/styles.css" />
     <script defer src="./assets/api.js"></script>
+    <script defer src="./assets/user.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         api.requireAuth();
@@ -30,7 +31,9 @@
                     await fetch(urlRes.url, { method:'PUT', body:image, headers:{'Content-Type': image.type || 'application/octet-stream'} });
                     s3_key = urlRes.key;
                 }
-                const r = await fetch(`${window.API_ROOT}/complaints`, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ user_id:1, area, description, s3_key }) });
+                const userId = user.getCurrentUserId();
+                if (!userId) throw new Error('User not authenticated');
+                const r = await fetch(`${window.API_ROOT}/complaints`, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ user_id: userId, area, description, s3_key }) });
                 if (!r.ok) throw 0;
                 msg.textContent = 'Complaint submitted successfully!';
                 form.reset();
@@ -60,14 +63,21 @@
         </div>
     </header>
     <main class="container">
-        <form id="complaintForm">
-            <input type="text" id="area" placeholder="Area" required />
-            <textarea id="description" placeholder="Complaint" required></textarea>
-            <input type="file" id="image" accept="image/*" />
-            <button type="submit">Submit</button>
-        </form>
-        <div id="messages" class="muted"></div>
-        <h2>Recent Complaints</h2>
+        <div class="card" style="max-width: 600px; margin: 0 auto 32px;">
+            <h2 style="text-align: center; margin-bottom: 24px;">Submit a Complaint</h2>
+            <form id="complaintForm">
+                <input type="text" id="area" placeholder="Area/Location" required />
+                <textarea id="description" placeholder="Describe the issue in detail..." required style="min-height: 120px; resize: vertical;"></textarea>
+                <div style="margin: 16px 0;">
+                    <label for="image" style="display: block; margin-bottom: 8px; color: var(--muted);">Upload Photo (Optional)</label>
+                    <input type="file" id="image" accept="image/*" style="width: 100%;" />
+                </div>
+                <button type="submit" style="width: 100%;">Submit Complaint</button>
+            </form>
+            <div id="messages" class="muted" style="text-align: center; margin-top: 16px;"></div>
+        </div>
+        
+        <h2 style="text-align: center; margin: 32px 0 24px;">Recent Complaints</h2>
         <div id="list" class="list"></div>
     </main>
 </body>

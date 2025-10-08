@@ -1,16 +1,9 @@
 const express = require('express');
-const mysql = require('mysql2/promise');
+const SQLiteDatabase = require('../database/sqlite');
 
 const router = express.Router();
 
-const dbPool = mysql.createPool({
-	host: process.env.DB_HOST,
-	user: process.env.DB_USER,
-	password: process.env.DB_PASSWORD,
-	database: process.env.DB_NAME,
-	waitForConnections: true,
-	connectionLimit: 10,
-});
+const db = new SQLiteDatabase();
 
 // Search schedules by area and/or day_of_week
 router.get('/', async (req, res) => {
@@ -21,9 +14,11 @@ router.get('/', async (req, res) => {
 	if (day) { clauses.push('day_of_week = ?'); params.push(day); }
 	const where = clauses.length ? ('WHERE ' + clauses.join(' AND ')) : '';
 	try {
-		const [rows] = await dbPool.query(`SELECT * FROM schedules ${where} ORDER BY area, day_of_week` , params);
+		await db.connect();
+		const [rows] = await db.query(`SELECT * FROM schedules ${where} ORDER BY area, day_of_week` , params);
 		res.json(rows);
 	} catch (err) {
+		console.error('Schedules error:', err);
 		res.status(500).json({ error: 'DB error' });
 	}
 });
